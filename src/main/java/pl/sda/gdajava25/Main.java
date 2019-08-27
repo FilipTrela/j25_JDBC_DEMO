@@ -28,7 +28,12 @@ public class Main {
                 if (komenda.equalsIgnoreCase("Wstaw")) {
                     studentDao.insertStudent(makeStudent());
                 } else if (komenda.equalsIgnoreCase("Usun")) {
-                    studentDao.deleteStudent(SCANNER.askId());
+                   boolean delete =  studentDao.deleteStudent(SCANNER.askId());
+                   if(delete){
+                       System.out.println("Usunięto");
+                   }else {
+                       System.err.println("Błąd usuwania!");
+                   }
                 } else if (komenda.equalsIgnoreCase("Listuj")) {
                     studentDao.getListAllStudent().forEach(System.out::println);
                 } else if (komenda.toUpperCase().contains("ID")) {

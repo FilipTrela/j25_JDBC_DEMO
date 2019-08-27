@@ -1,10 +1,7 @@
 package pl.sda.gdajava25;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,25 +25,37 @@ public class StudentDao { // data access object -
 
     public void insertStudent(Student student) throws SQLException {
         try (Connection connection = mysqlConnection.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(StudentQueries.INSERT_QUERY)) {
+            try (PreparedStatement statement = connection.prepareStatement(StudentQueries.INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
                 statement.setString(1, student.getName());
                 statement.setInt(2, student.getAge());
                 statement.setDouble(3, student.getAverage());
                 statement.setBoolean(4, student.isAlive());
 
+
                 statement.execute();
+                ResultSet resultSet = statement.getGeneratedKeys();
+                if (resultSet.next()) {
+                    long generatedId = resultSet.getLong(1);
+                    System.out.println("Student został utworzony z id: " + generatedId);
+                }
             }
         }
     }
 
-    public void deleteStudent(Long id) throws SQLException {
+    public boolean deleteStudent(Long id) throws SQLException {
         try (Connection connection = mysqlConnection.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(StudentQueries.DELETE_STUDENT)) {
                 statement.setLong(1, id);
 
-                statement.execute();
+                int affectedRecords = statement.executeUpdate();
+
+                if(affectedRecords>0){
+                    return true;
+                }
+
             }
         }
+        return false;
     }
 
     private Student getStudent(ResultSet resultSet) throws SQLException {

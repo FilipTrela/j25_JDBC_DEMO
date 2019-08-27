@@ -9,7 +9,7 @@ import java.util.Properties;
 
 @Getter
 public class MySqlConnectionParameters {
-    private static final String PROPERTIES_FILE_NAME = "/jdbc.poperties";
+    private static final String PROPERTIES_FILE_NAME = "/jdbc.properties";
     private Properties properties;
     private String dbHost;
     private String dbPort;
